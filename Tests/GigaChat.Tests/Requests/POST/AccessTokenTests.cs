@@ -1,4 +1,4 @@
-﻿using GigaChat.Requests.POST.AccessToken;
+﻿using GigaChat.Requests.AccessToken;
 using Xunit.Abstractions;
 
 namespace Tests.GigaChat.Tests.Requests.POST;
@@ -6,15 +6,15 @@ namespace Tests.GigaChat.Tests.Requests.POST;
 public class AccessTokenTests
 {
     private readonly ITestOutputHelper _outputHelper;
-    private RestClientAccessToken _restClientAccessToken;
+    private AccessTokenRestClient _accessTokenRestClient;
 
     public AccessTokenTests(ITestOutputHelper outputHelper)
     {
         _outputHelper = outputHelper;
 
-        _restClientAccessToken =
-            new RestClientAccessToken(
-                "ZTBhZGYxY2EtNTUxZC00ZWZkLWI0ZWMtY2ZkMWMzODQyMTQyOjk2MGQzMzY2LWYwODMtNDViZS1hZWEwLWY3Nzc1MTRmYmI5Mw==",
+        _accessTokenRestClient =
+            new AccessTokenRestClient(
+                "ZTBhZGYxY2EtNTUxZC00ZWZkLWI0ZWMtY2ZkMWMzODQyMTQyOmNmMzkyYThmLTUzZjMtNDJiMC05MmU3LTAyNzc4NTY4YmRhYQ==",
                 "GIGACHAT_API_PERS");
         
     }
@@ -22,12 +22,14 @@ public class AccessTokenTests
     [Fact]
     public async Task DisplayTest()
     {
-        AccessToken accessToken = new AccessToken(_restClientAccessToken);
+        AccessTokenRequest accessToken = new AccessTokenRequest(_accessTokenRestClient);
 
-        var response = await accessToken.SendAccessToken();
+        var response = await accessToken.Send();
         
-        _outputHelper.WriteLine(response.ResponseStatus.ToString());
-        _outputHelper.WriteLine(response.ErrorException?.ToString() ?? "");
-        _outputHelper.WriteLine(response.Content);
+        if (response is not null)
+        {
+            _outputHelper.WriteLine(response.access_token);
+            _outputHelper.WriteLine(response.expires_at.ToString());
+        }
     }
 }
