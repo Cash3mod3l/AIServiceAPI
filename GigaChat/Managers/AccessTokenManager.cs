@@ -31,16 +31,11 @@ namespace GigaChat.Managers
         private (string accessToken, DateTime TTL) generateAccessToken()
         {
             AccessTokenRequest accessTokenRequest = new(_accessTokenRestClient);
-            var response = accessTokenRequest.Send().GetAwaiter().GetResult();
-
-            if (response is null)
-            {
-                // TODO: подумать над поведением функции
-            }
+            AccessTokenResponseModel response = accessTokenRequest.Send().GetAwaiter().GetResult() ?? throw new IOException("Не удалось получить токен авторизации");
 
             return
             (
-                response!.access_token,
+                response.access_token,
                 DateTimeOffset.FromUnixTimeSeconds(response.expires_at).UtcDateTime
             );
         }
