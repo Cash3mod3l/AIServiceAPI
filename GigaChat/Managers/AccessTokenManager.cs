@@ -36,7 +36,7 @@ namespace GigaChat.Managers
             return
             (
                 response.access_token,
-                DateTimeOffset.FromUnixTimeSeconds(response.expires_at).UtcDateTime
+                DateTimeOffset.FromUnixTimeMilliseconds(response.expires_at).UtcDateTime.ToLocalTime()
             );
         }
     }

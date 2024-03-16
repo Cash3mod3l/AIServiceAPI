@@ -10,19 +10,15 @@ namespace GigaChat.Controllers
     public class GetDescriptionController : ControllerBase
     {
         private readonly AccessTokenManager _accessTokenManager;
-        public GetDescriptionController(IConfiguration configuration)
+        public GetDescriptionController(AccessTokenManager accessTokenManager)
         {
-            GigaChatConfig config = configuration.Get<GigaChatConfig>() ?? throw new ArgumentNullException("");
-            _accessTokenManager = new(
-                new AccessTokenRestClient(config.ClientToken, GigaChatScopeTools.Of(config.AccessTokenScope))
-            );
-
+            _accessTokenManager = accessTokenManager;
         }
 
-        [HttpGet("/")]
+        [HttpGet("")]
         public IActionResult Get(string request)
         {
-            return Ok(request);
+            return Ok(_accessTokenManager.AccessToken);
         }
     }
 }

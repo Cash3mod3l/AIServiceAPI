@@ -1,16 +1,20 @@
 ﻿using RestSharp;
 
-namespace GigaChat.Requests;
-
-public abstract class GigaChatRestClient : RestClient
+namespace GigaChat.Requests
 {
-    public static RestClientOptions generateRestClientOptions(string url)
+    public abstract class GigaChatRestClient : RestClient
     {
-        return new(url) {
-            MaxTimeout = -1,
-            RemoteCertificateValidationCallback = (sender, certificate, chain, sslPolicyErrors) => true,
-        };
-    }
+        public static RestClientOptions generateRestClientOptions(string baseUrl)
+        {
+            return new(baseUrl)
+            {
+                MaxTimeout = -1,
+                RemoteCertificateValidationCallback = (sender, certificate, chain, sslPolicyErrors) => true,
+            };
+        }
 
-    public GigaChatRestClient() : base(generateRestClientOptions("https://gigachat.devices.sberbank.ru/api/v1")) {}
+        public GigaChatRestClient(string baseUrl) : base(generateRestClientOptions(baseUrl))
+        {
+        }
+    }
 }

@@ -1,8 +1,11 @@
+using GigaChat.Configs;
 using GigaChat.Managers;
 using GigaChat.Requests;
 using GigaChat.Requests.AccessToken;
 
 var builder = WebApplication.CreateBuilder(args);
+
+GigaChatConfig config = builder.Configuration.GetSection("GigaChatConfig").Get<GigaChatConfig>() ?? throw new ArgumentNullException("Не удалось найти конфиг");
 
 builder.Services.AddControllers();
 
@@ -11,10 +14,22 @@ builder.Services.AddSwaggerGen();
 
 /*
 builder.Services.AddSingleton<GigaChatRestClient>();
-builder.Services.AddSingleton<AccessTokenRestClient>();
-
-builder.Services.AddSingleton<AccessTokenManager>();
 */
+builder.Services.AddSingleton<AccessTokenManager>(
+    (provider) =>
+    {
+        AccessTokenRestClient accessTokenRestClient = new
+        (
+            config.AccessTokenUrl,
+            config.ClientToken,
+            GigaChatScopeTools.Of(config.AccessTokenScope)
+        );
+        AccessTokenManager accessTokenManager = new(accessTokenRestClient);
+
+        return accessTokenManager;
+    }
+);
+
 
 var app = builder.Build();
 

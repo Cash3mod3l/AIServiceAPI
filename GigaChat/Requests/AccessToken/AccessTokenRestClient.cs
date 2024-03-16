@@ -16,7 +16,7 @@ namespace GigaChat.Requests.AccessToken
             {GigaChatScope.Corporate, "GIGACHAT_API_CORP"}
         };
 
-        public static string ToString(this GigaChatScope scope)
+        public static string ToString(GigaChatScope scope)
         {
             return GigaChatScopeNames[scope];
         }
@@ -27,15 +27,13 @@ namespace GigaChat.Requests.AccessToken
         }
     }
     
-
-
     public class AccessTokenRestClient: RestClient
     {
-        public AccessTokenRestClient(string token, GigaChatScope scope) : base(GigaChatRestClient.generateRestClientOptions("https://ngw.devices.sberbank.ru:9443/api/v2"))
+        public AccessTokenRestClient(string accessTokenUrl, string token, GigaChatScope scope) : base(GigaChatRestClient.generateRestClientOptions(accessTokenUrl))
         {
             this.AddDefaultHeader("RqUID", $"{Guid.NewGuid()}");
             this.AddDefaultHeader("Authorization", $"Basic {token}");
-            this.AddDefaultParameter("scope", $"{scope}");
+            this.AddDefaultParameter("scope", $"{GigaChatScopeTools.ToString(scope)}");
         }
     }
 }
