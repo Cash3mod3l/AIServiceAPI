@@ -2,7 +2,7 @@
 
 namespace GigaChat.Requests
 {
-    public abstract class GigaChatRestClient : RestClient
+    public class GigaChatRestClient : RestClient
     {
         public static RestClientOptions generateRestClientOptions(string baseUrl)
         {

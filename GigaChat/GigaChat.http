@@ -1,5 +1,13 @@
 @GigaChat_HostAddress = http://localhost:5150
 
-GET {{GigaChat_HostAddress}}/api/GetDescription
+POST {{GigaChat_HostAddress}}/api/GetDescription
+Content-Type: application/json
 
+"<13>Mar 17 19:17:36 WS-DESKTOP.llc-itb.local Service_Control_Manager[980]: INFO 7040 NT AUTHORITY Тип запуска службы \"Фоновая интеллектуальная служба передачи (BITS)\" был изменен с \"Вручную\" на \"Автоматически\"."
+###
+
+POST {{GigaChat_HostAddress}}/api/GetDescription
+Content-Type: application/json
+
+"рлорлорлорлор"
 ###

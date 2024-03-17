@@ -1,6 +1,9 @@
 using GigaChat.Configs;
 using GigaChat.Managers;
+using GigaChat.Requests;
 using GigaChat.Requests.AccessToken;
+using GigaChat.Requests.ChatCompletions;
+using GigaChat.Requests.ChatCompletions.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GigaChat.Controllers
@@ -9,16 +12,47 @@ namespace GigaChat.Controllers
     [ApiController]
     public class GetDescriptionController : ControllerBase
     {
+        private readonly GigaChatRestClient _gigaChatRestClient;
         private readonly AccessTokenManager _accessTokenManager;
-        public GetDescriptionController(AccessTokenManager accessTokenManager)
+        public GetDescriptionController(GigaChatRestClient gigaChatRestClient, AccessTokenManager accessTokenManager)
         {
+
+            _gigaChatRestClient = gigaChatRestClient;
             _accessTokenManager = accessTokenManager;
+            
         }
 
-        [HttpGet("")]
-        public IActionResult Get(string request)
+        private ChatContext generateChatContextFromEvent(string textEvent)
         {
-            return Ok(_accessTokenManager.AccessToken);
+            string content = $"Обьясни что это:\n\n{textEvent}";
+
+            return new()
+            {
+                new()
+                {
+                    role = "user",
+                    content = content
+                }
+            };
+        }
+
+        [HttpPost("")]
+        public async Task<IActionResult> Get([FromBody] string textEvent)
+        {
+            ChatCompletionsRequest chatCompletionsRequest = new
+            (
+                _gigaChatRestClient,
+                _accessTokenManager,
+                generateChatContextFromEvent(textEvent)
+            );
+
+            string? answer = await chatCompletionsRequest.Send();
+            if (answer is null)
+            {
+                return NoContent();
+            }
+
+            return Ok(answer);
         }
     }
 }

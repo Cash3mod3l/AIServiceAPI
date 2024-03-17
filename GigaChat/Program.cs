@@ -12,9 +12,6 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-/*
-builder.Services.AddSingleton<GigaChatRestClient>();
-*/
 builder.Services.AddSingleton<AccessTokenManager>(
     (provider) =>
     {
@@ -28,6 +25,13 @@ builder.Services.AddSingleton<AccessTokenManager>(
 
         return accessTokenManager;
     }
+);
+
+builder.Services.AddSingleton<GigaChatRestClient>(
+    (provider) =>
+        {
+            return new GigaChatRestClient(config.BaseUrl);
+        }
 );
 
 
